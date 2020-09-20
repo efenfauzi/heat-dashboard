@@ -81,13 +81,26 @@ def stacks_list(request, marker=None, sort_dir='desc', sort_key='created_at',
     stacks_iter = heatclient(request).stacks.list(limit=request_size,
                                                   **kwargs)
 
+    print(heatclient(request).stacks.get('1654c5e0-47da-49cc-a40e-c57d58c1c7ae'))
+
     has_prev_data = False
     has_more_data = False
     stacks = list(stacks_iter)
+    new_stack = []
+    for x in stacks:
+        stack_obj = vars(x)
+        stack_detail = vars(heatclient(request).stacks.get(stack_obj['id']))
+        #skip network plesk
+        if 'networks' in stack_detail['description'] and 'plsk' or 'plesk' in stack_obj['stack_name'].lower():
+            continue
+        #skip instance plesk
+        if 'plesk' in stack_detail['description']:
+            continue
+        new_stack.append(x)
 
     if paginate:
-        if len(stacks) > page_size:
-            stacks.pop()
+        if len(new_stack) > page_size:
+            new_stack.pop()
             has_more_data = True
             if marker is not None:
                 has_prev_data = True
@@ -95,7 +108,7 @@ def stacks_list(request, marker=None, sort_dir='desc', sort_key='created_at',
             has_more_data = True
         elif marker is not None:
             has_prev_data = True
-    return (stacks, has_more_data, has_prev_data)
+    return (new_stack, has_more_data, has_prev_data)
 
 
 def _ignore_if(key, value):
