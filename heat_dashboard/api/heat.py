@@ -91,7 +91,7 @@ def stacks_list(request, marker=None, sort_dir='desc', sort_key='created_at',
         stack_obj = vars(x)
         stack_detail = vars(heatclient(request).stacks.get(stack_obj['id']))
         #skip network plesk
-        if 'networks' in stack_detail['description'] and 'plsk' or 'plesk' in stack_obj['stack_name'].lower():
+        if 'networks' in stack_detail['description'] and ('plsk' in stack_obj['stack_name'].lower() or 'plesk' in stack_obj['stack_name'].lower()):
             continue
         #skip instance plesk
         if 'plesk' in stack_detail['description']:
