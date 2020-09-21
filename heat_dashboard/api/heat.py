@@ -81,8 +81,6 @@ def stacks_list(request, marker=None, sort_dir='desc', sort_key='created_at',
     stacks_iter = heatclient(request).stacks.list(limit=request_size,
                                                   **kwargs)
 
-    print(heatclient(request).stacks.get('1654c5e0-47da-49cc-a40e-c57d58c1c7ae'))
-
     has_prev_data = False
     has_more_data = False
     stacks = list(stacks_iter)
